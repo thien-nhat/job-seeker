@@ -8,8 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.thien.jobseeker.domain.User;
+import com.thien.jobseeker.domain.response.Meta;
+import com.thien.jobseeker.domain.response.ResultPaginationDTO;
 import com.thien.jobseeker.repository.UserRepository;
-
 
 @Service
 public class UserService {
@@ -36,10 +37,21 @@ public class UserService {
         return null;
     }
 
-    public List<User> fetchAllUser(Pageable pageable) {
+    public ResultPaginationDTO fetchAllUser(Pageable pageable) {
         Page<User> usersPage = this.userRepository.findAll(pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        Meta mt = new Meta();
+        mt.setPage(usersPage.getNumber() + 1);
+        mt.setPageSize(usersPage.getSize());
 
-        return usersPage.getContent();
+        mt.setPages(usersPage.getTotalPages());
+        mt.setTotal(usersPage.getTotalElements());
+
+
+        rs.setMeta(mt);
+        rs.setResult(usersPage.getContent());
+
+        return rs;
     }
 
     public User handleUpdateUser(User reqUser) {

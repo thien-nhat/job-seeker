@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.thien.jobseeker.domain.User;
+import com.thien.jobseeker.domain.response.ResultPaginationDTO;
 import com.thien.jobseeker.service.UserService;
 import com.thien.jobseeker.util.error.IdInvalidException;
 
@@ -61,7 +62,7 @@ public class UserController {
 
     // fetch all users
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUser(
+    public ResponseEntity<ResultPaginationDTO> getAllUser(
             @RequestParam("current") Optional<String> currentOptional,
             @RequestParam("pageSize") Optional<String> pageSizeOptional) {
         String s_current = currentOptional.isPresent() ? currentOptional.get() : "";
