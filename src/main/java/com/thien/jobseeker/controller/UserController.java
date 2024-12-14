@@ -3,8 +3,10 @@ package com.thien.jobseeker.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.query.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +23,7 @@ import com.thien.jobseeker.domain.User;
 import com.thien.jobseeker.domain.response.ResultPaginationDTO;
 import com.thien.jobseeker.service.UserService;
 import com.thien.jobseeker.util.error.IdInvalidException;
+import com.turkraft.springfilter.boot.Filter;
 
 @RestController
 public class UserController {
@@ -63,16 +66,9 @@ public class UserController {
     // fetch all users
     @GetMapping("/users")
     public ResponseEntity<ResultPaginationDTO> getAllUser(
-            @RequestParam("current") Optional<String> currentOptional,
-            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
-        String s_current = currentOptional.isPresent() ? currentOptional.get() : "";
-        String s_pageSize = currentOptional.isPresent() ? currentOptional.get() : "";
-
-        int current = Integer.parseInt(s_current);
-        int pageSize = Integer.parseInt(s_pageSize);
-        Pageable pageable = PageRequest.of(current - 1, pageSize);
-
-        return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser(pageable));
+            @Filter Specification<User> spec,
+            Pageable pageable) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser(spec, pageable));
     }
 
     @PutMapping("/users")
