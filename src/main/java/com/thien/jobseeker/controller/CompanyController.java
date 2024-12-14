@@ -2,9 +2,7 @@ package com.thien.jobseeker.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import lombok.RequiredArgsConstructor;
 
-import org.hibernate.annotations.Filter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -16,9 +14,14 @@ import com.thien.jobseeker.domain.response.ResultPaginationDTO;
 import com.thien.jobseeker.service.CompanyService;
 
 @RestController
-@RequiredArgsConstructor
+@RequestMapping("/api/v1")
 public class CompanyController {
     private final CompanyService companyService;
+
+    
+    public CompanyController(CompanyService companyService) {
+        this.companyService = companyService;
+    }
 
     @PostMapping("/companies")
     public ResponseEntity<?> createCompany(@Valid @RequestBody Company reqCompany){

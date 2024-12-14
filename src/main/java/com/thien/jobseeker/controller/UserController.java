@@ -1,10 +1,5 @@
 package com.thien.jobseeker.controller;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.hibernate.query.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -16,16 +11,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.thien.jobseeker.domain.User;
 import com.thien.jobseeker.domain.response.ResultPaginationDTO;
 import com.thien.jobseeker.service.UserService;
+import com.thien.jobseeker.util.annotation.ResponseMessage;
 import com.thien.jobseeker.util.error.IdInvalidException;
 import com.turkraft.springfilter.boot.Filter;
 
 @RestController
+@RequestMapping("/api/v1")
 public class UserController {
     private final UserService userService;
 
@@ -65,6 +62,7 @@ public class UserController {
 
     // fetch all users
     @GetMapping("/users")
+    @ResponseMessage("Get all users")
     public ResponseEntity<ResultPaginationDTO> getAllUser(
             @Filter Specification<User> spec,
             Pageable pageable) {
