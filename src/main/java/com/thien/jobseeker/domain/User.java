@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import com.thien.jobseeker.util.constant.GenderEnum;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -13,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Entity
 @Table(name = "users")
@@ -29,10 +29,12 @@ public class User {
     private String password;
 
     private int age;
-    
+
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
     private String address;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String refeshToken;
     private Instant createdAt;
     private Instant updatedAt;
