@@ -49,7 +49,6 @@ public class AuthController {
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        String access_token = this.securityUtil.createAccessToken(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         ResLoginDTO res = new ResLoginDTO();
@@ -62,6 +61,7 @@ public class AuthController {
                 currentUserInDB.getName());
         res.setUser(userLogin);
 
+        String access_token = this.securityUtil.createAccessToken(authentication, res.getUser());
         res.setAccessToken(access_token);
 
         String refreshToken = this.securityUtil.createRefreshToken(loginDto.getUsername(), res);
