@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import com.thien.jobseeker.domain.User;
 import com.thien.jobseeker.domain.response.ResLoginDTO;
 import com.thien.jobseeker.service.UserService;
 import com.thien.jobseeker.util.SecurityUtil;
+import com.thien.jobseeker.util.annotation.ResponseMessage;
 
 import jakarta.validation.Valid;
 
@@ -39,7 +41,7 @@ public class AuthController {
         this.userService = userService;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDto) {
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -75,5 +77,23 @@ public class AuthController {
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(res);
+    }
+
+    @GetMapping("/auth/account")
+    @ResponseMessage("fetch account successfully")
+    public ResponseEntity<ResLoginDTO.UserLogin> getAccount() {
+        String email = SecurityUtil.getCurrentUserLogin().isPresent()
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+
+        User currentUserInDB = this.userService.handleGetUserByUsername(email);
+        if (currentUserInDB == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
+                currentUserInDB.getId(), currentUserInDB.getEmail(), currentUserInDB.getName());
+
+        return ResponseEntity.ok().body(userLogin);
     }
 }
