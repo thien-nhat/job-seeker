@@ -44,17 +44,17 @@ public class CompanyService {
         return this.companyRepository.findById(id).orElseThrow(() -> new RuntimeException("Data not found"));
     }
 
-    @Transactional
     public Company handleUpdateCompany(Company companyDTO) {
+
         Company company = handleGetCompany(companyDTO.getId());
         company.setName(companyDTO.getName());
         company.setDescription(companyDTO.getDescription());
         company.setAddress(companyDTO.getAddress());
         company.setLogo(companyDTO.getLogo());
-        return company;
+        
+        return this.companyRepository.save(company);
     }
 
-    @Transactional
     public void handleDeleteCompany(long id) {
         Company company = handleGetCompany(id);
         this.companyRepository.delete(company);
