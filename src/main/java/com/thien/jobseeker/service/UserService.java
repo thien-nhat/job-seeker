@@ -76,6 +76,10 @@ public class UserService {
         return this.userRepository.findByEmail(username);
     }
 
+    public User getUserByRefreshTokenAndEmail(String refreshToken, String email) {
+        return this.userRepository.findByRefreshTokenAndEmail(refreshToken, email);
+    }
+
     public boolean isEmailExit(String email) {
         return this.userRepository.existsByEmail(email);
     }

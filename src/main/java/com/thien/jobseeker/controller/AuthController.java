@@ -1,5 +1,6 @@
 package com.thien.jobseeker.controller;
 
+import com.thien.jobseeker.util.error.IdInvalidException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -58,7 +59,7 @@ public class AuthController {
                 currentUserInDB.getName());
         res.setUser(userLogin);
 
-        String access_token = this.securityUtil.createAccessToken(authentication, res.getUser());
+        String access_token = this.securityUtil.createAccessToken(authentication.getName(), res.getUser());
         res.setAccessToken(access_token);
 
         String refreshToken = this.securityUtil.createRefreshToken(loginDto.getUsername(), res);
@@ -96,11 +97,42 @@ public class AuthController {
 
     @GetMapping("auth/refresh")
     @ResponseMessage("Get user by refresh token")
-    public ResponseEntity<String> getRefreshToken(
+    public ResponseEntity<ResLoginDTO> getRefreshToken(
             @CookieValue(name = "refresh_token") String refreshToken
-    ) {
+    ) throws IdInvalidException {
         Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refreshToken);
         String email = decodedToken.getSubject();
-        return ResponseEntity.ok().body(email);
+
+        User currentUser = this.userService.getUserByRefreshTokenAndEmail(refreshToken, email);
+        if (currentUser == null) {
+            throw new IdInvalidException("Refresh token not valid");
+        }
+
+        ResLoginDTO res = new ResLoginDTO();
+        User currentUserInDB = this.userService.handleGetUserByUsername(email);
+        if (currentUserInDB == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(currentUserInDB.getId(), currentUserInDB.getEmail(),
+                currentUserInDB.getName());
+        res.setUser(userLogin);
+
+        String access_token = this.securityUtil.createAccessToken(email, res.getUser());
+        res.setAccessToken(access_token);
+
+        String new_refreshToken = this.securityUtil.createRefreshToken(email, res);
+        this.userService.updateUserToken(new_refreshToken, email);
+
+        ResponseCookie cookie = ResponseCookie
+                .from("refresh_token", new_refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(refreshTokenExpiration)
+                .build();
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(res);
     }
 }
