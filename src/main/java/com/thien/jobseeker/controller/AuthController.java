@@ -8,11 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
 
 import com.thien.jobseeker.domain.LoginDTO;
 import com.thien.jobseeker.domain.User;
@@ -95,5 +92,15 @@ public class AuthController {
                 currentUserInDB.getId(), currentUserInDB.getEmail(), currentUserInDB.getName());
 
         return ResponseEntity.ok().body(userLogin);
+    }
+
+    @GetMapping("auth/refresh")
+    @ResponseMessage("Get user by refresh token")
+    public ResponseEntity<Void> getRefreshToken(
+            @CookieValue(name = "refresh_token") String refreshToken
+    ) {
+        Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refreshToken);
+        String email = decodedToken.getSubject();
+        return ResponseEntity.ok().build();
     }
 }
