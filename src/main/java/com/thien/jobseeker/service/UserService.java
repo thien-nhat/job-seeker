@@ -113,7 +113,7 @@ public class UserService {
     public void updateUserToken(String token, String email) {
         User currentUser = this.handleGetUserByUsername(email);
         if (currentUser != null) {
-            currentUser.setRefeshToken(token);
+            currentUser.setRefreshToken(token);
             this.userRepository.save(currentUser);
         }
     }
