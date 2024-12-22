@@ -76,6 +76,10 @@ public class UserService {
         return this.userRepository.findByEmail(username);
     }
 
+    public User getUserByRefreshTokenAndEmail(String refreshToken, String email) {
+        return this.userRepository.findByRefreshTokenAndEmail(refreshToken, email);
+    }
+
     public boolean isEmailExit(String email) {
         return this.userRepository.existsByEmail(email);
     }
@@ -109,7 +113,7 @@ public class UserService {
     public void updateUserToken(String token, String email) {
         User currentUser = this.handleGetUserByUsername(email);
         if (currentUser != null) {
-            currentUser.setRefeshToken(token);
+            currentUser.setRefreshToken(token);
             this.userRepository.save(currentUser);
         }
     }

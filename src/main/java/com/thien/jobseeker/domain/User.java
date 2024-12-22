@@ -35,7 +35,7 @@ public class User {
     private String address;
 
     @Column(columnDefinition = "MEDIUMTEXT")
-    private String refeshToken;
+    private String refreshToken;
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
