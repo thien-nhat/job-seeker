@@ -96,11 +96,11 @@ public class AuthController {
 
     @GetMapping("auth/refresh")
     @ResponseMessage("Get user by refresh token")
-    public ResponseEntity<Void> getRefreshToken(
+    public ResponseEntity<String> getRefreshToken(
             @CookieValue(name = "refresh_token") String refreshToken
     ) {
         Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refreshToken);
         String email = decodedToken.getSubject();
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(email);
     }
 }
