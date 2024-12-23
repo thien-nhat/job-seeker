@@ -81,6 +81,10 @@
 			<artifactId>jpa</artifactId>
 			<version>3.1.7</version>
 		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
