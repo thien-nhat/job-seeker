@@ -84,6 +84,8 @@ public class AuthController {
     @GetMapping("/auth/account")
     @ResponseMessage("fetch account successfully")
     public ResponseEntity<ResLoginDTO.UserLogin> getAccount() {
+        logger.info("Executing getAccount method");
+
         String email = SecurityUtil.getCurrentUserLogin().isPresent()
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
@@ -104,6 +106,8 @@ public class AuthController {
     public ResponseEntity<ResLoginDTO> getRefreshToken(
             @CookieValue(name = "refresh_token") String refreshToken
     ) throws IdInvalidException {
+        logger.info("Executing getAccount method");
+
         Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refreshToken);
         String email = decodedToken.getSubject();
 
