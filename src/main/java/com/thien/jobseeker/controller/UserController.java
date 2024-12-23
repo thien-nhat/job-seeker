@@ -1,5 +1,7 @@
 package com.thien.jobseeker.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,8 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     private final UserService userService;
 
     private final PasswordEncoder passwordEncoder;
@@ -40,6 +44,7 @@ public class UserController {
     @PostMapping("/users")
     @ResponseMessage("Create a new user")
     public ResponseEntity<ResCreateUserDTO> createNewUser(@Valid @RequestBody User postManUser) throws IdInvalidException {
+        logger.info("Executing createNewUser method");
         boolean isEmailExist = this.userService.isEmailExit(postManUser.getEmail());
         if (isEmailExist) {
             throw new IdInvalidException("Email" + postManUser.getEmail() + " da ton tai");
