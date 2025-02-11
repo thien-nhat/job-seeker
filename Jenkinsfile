@@ -59,6 +59,7 @@ pipeline {
     post {
         always {
             // Clean up actions
+            echo 'Cleaning up...'
         }
     }
 }
