@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    tools {
+        jdk 'JDK 17'
+    }
     environment {
         MYSQL_ROOT_PASSWORD = '12345'
         MYSQL_DATABASE = 'jobseeker'
