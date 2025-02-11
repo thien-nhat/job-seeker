@@ -6,18 +6,6 @@ pipeline {
         MYSQL_DATABASE = 'jobseeker'
     }
 
-    services {
-        mysql {
-            image 'mysql:9.1'
-            envVars {
-                MYSQL_ROOT_PASSWORD = '12345'
-                MYSQL_DATABASE = 'jobseeker'
-            }
-            options '--health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5'
-            ports '3306:3306'
-        }
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -30,6 +18,17 @@ pipeline {
                 script {
                     // Set up JDK 17
                     tool name: 'JDK 17', type: 'JDK'
+                }
+            }
+        }
+
+        stage('Start MySQL') {
+            steps {
+                script {
+                    // Start MySQL container
+                    docker.image('mysql:9.1').withRun('-e MYSQL_ROOT_PASSWORD=12345 -e MYSQL_DATABASE=jobseeker -p 3306:3306') { c ->
+                        // MySQL is now running
+                    }
                 }
             }
         }
