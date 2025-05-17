@@ -1,3 +1,5 @@
 # Jobseeker
 
-Demo project for Spring Boot
+Demo project Job Seeker for Spring framework
+
+![Alt text](./diagram.jpg)
